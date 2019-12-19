@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:enroll="http://schemas.microsoft.com/windows/management/2012/01/enrollment"
+        targetNamespace="http://schemas.microsoft.com/windows/management/2012/01/enrollment"
+        elementFormDefault="qualified">
+    <xsd:element name="DiscoverResponse">
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element name="DiscoverResult">
+                    <xsd:complexType>
+                        <xsd:all>
+                            <xsd:element minOccurs="1" maxOccurs="1" name="AuthPolicy"
+                                         type="enroll:AuthPolicyType"/>
+                            <xsd:element minOccurs="0" maxOccurs="1"
+                                         name="EnrollmentPolicyServiceUrl" nillable="true" type="xsd:anyURI"/>
+                            <xsd:element minOccurs="1" maxOccurs="1"
+                                         name="EnrollmentServiceUrl" type="xsd:anyURI"/>
+                            <xsd:element minOccurs="0" maxOccurs="1"
+                                         name="AuthenticationServiceUrl" nillable="true" type="xsd:anyURI"/>
+                            <xsd:element minOccurs="0" maxOccurs="1" name="EnrollmentVersion"
+                                         nillable="true" type="xsd:decimal"/>
+                        </xsd:all>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="Discover">
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element name="request">
+                    <xsd:complexType>
+                        <xsd:all>
+                            <xsd:element minOccurs="1" maxOccurs="1" name="EmailAddress"
+                                         type="enroll:EmailAddressType"/>
+                            <xsd:element minOccurs="1" maxOccurs="1" name="RequestVersion"
+                                         type="xsd:decimal"/>
+                            <xsd:element minOccurs="1" maxOccurs="1" name="DeviceType"
+                                         type="enroll:DeviceType"/>
+                            <xsd:element minOccurs="1" maxOccurs="1"
+                                         name="ApplicationVersion" type="enroll:DottedQuadType"/>
+                            <xsd:element minOccurs="1" maxOccurs="1" name="OSEdition"
+                                         type="xsd:unsignedInt"/>
+                            <xsd:element name="AuthPolicies">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element minOccurs="1" maxOccurs="3"
+                                                     name="AuthPolicy" type="enroll:AuthPolicyType"/>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:all>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:simpleType name="AuthPolicyType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Certificate"/>
+            <xsd:enumeration value="Federated"/>
+            98 / 104
+            [MS-MDE2] - v20190313
+            Mobile Device Enrollment Protocol Version 2
+            Copyright © 2019 Microsoft Corporation
+            Release: March 13, 2019
+            <xsd:enumeration value="OnPremise"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="DottedQuadType">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="([0-9]*\.){3}[0-9]*"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="DeviceType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="CIMClient_Windows"/>
+            <xsd:enumeration value="WindowsPhone"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="EmailAddressType">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[^@]+@[^\.]+\..+"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+</xsd:schema>
