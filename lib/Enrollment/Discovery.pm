@@ -22,8 +22,15 @@ sub new {
         $xml = XML::LibXML->load_xml(string => $reqXML);
     } or do {
         #TODO output some kind of error internally
-        return undef;
+        return (undef,"ERROR: Invalid client XML - $@");
     };
+    
+    # Now we extract the specific part of the message we actually want
+    my $xpc = XML::LibXML::XPathContext->new($xml);
+    $xpc->registerNs(
+        'enroll',
+        'http://schemas.microsoft.com/windows/management/2012/01/enrollment/'
+        );
 
     # Load XML schema from disk
     eval {
@@ -31,24 +38,17 @@ sub new {
             location => $schemaDir.$schemaName);
     } or do {
         #TODO output some kind of error internally
-        return undef;
+        return (undef,"ERROR: Failed to load schema - $@");
     };
 
     # Attempt to validate the input
     eval {
-        $valid = $schema->validate($xml)
+        $schema->validate($xpc->findnodes('//enroll:Discover'));
+        1;
     } or do {
         #TODO output some kind of error internally
-        return undef;
+        return (undef,"ERROR: Validation failed - $!");
     };
-
-    # One last bit of setup, we have to assign the namespaces to a tag so we can
-    # reference them later on when we need them.
-    my $xpc = XML::LibXML::XPathContext->new($xml);
-    $xpc->registerNs(
-        'enroll',
-        'http://schemas.microsoft.com/windows/management/2012/01/enrollment/'
-        );
 
     return bless {
         request => $xml,
@@ -64,7 +64,7 @@ sub bestSupportedAuthType {
     my $self = shift;
 
     my @clientAuth = map{$_->to_literal();}
-        $self.xpc->findnodes('//enroll:AuthPolicy');
+        $self->{'xpath'}->findnodes('//enroll:AuthPolicy');
 
     if( grep(/^OnPremise$/,@clientAuth) ){
         return 'OnPremise';

@@ -24,12 +24,14 @@ post '/EnrollmentServer/Discovery.svc' => sub {
     debug "Params: " . Data::Dump::dump($params);
     debug "Body: "   . request->body();
 
-    my $enrollDiscovery = Enrollment::Discovery->new(request->body());
-    send_error("Invalid request",400) unless defined $enrollDiscovery;
+    my ($enrollDiscovery,$err) = Enrollment::Discovery->new(request->body());
+    send_error($err,400) unless defined $enrollDiscovery;
 
-    my $authType = $enrollDiscovery->bestSupportedAuthType();
-    send_error("No supported AuthTypes",501) unless defined $authType;
+    my ($authType,$err) = $enrollDiscovery->bestSupportedAuthType();
+    send_error($err,501) unless defined $authType;
 
+    my ($response,$err) = $enrollDiscovery->buildResponseForAuthtype($authType);
+    send_error($err,501) unless defined $response;
     return $enrollDiscovery->buildResponseForAuthtype($authType);
 };
 
