@@ -30,9 +30,9 @@ post '/EnrollmentServer/Discovery.svc' => sub {
     my ($authType,$err) = $enrollDiscovery->bestSupportedAuthType();
     send_error($err,501) unless defined $authType;
 
-    my ($response,$err) = $enrollDiscovery->buildResponseForAuthtype($authType);
+    my ($response,$err) = $enrollDiscovery->buildResponseForAuthType($authType);
     send_error($err,501) unless defined $response;
-    return $enrollDiscovery->buildResponseForAuthtype($authType);
+    return $response
 };
 
 # TODO: implement for 2FA enrolement

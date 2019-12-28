@@ -10,7 +10,13 @@ use XML::LibXML;
 use XML::LibXML::XPathContext;
 
 my $schemaDir = File::Basename::dirname(__FILE__) . '/../../schema/';
-my $schemaName = 'discovery.xsd';
+my $schemaFileName = 'discovery.xsd';
+
+# Everything we're gonna need t process the XML
+my $xmlNamespace = 'http://schemas.microsoft.com/windows/management/2012/01/enrollment/';
+my $xmlNamespacePrefix = 'e';
+my $xmlRequestXPath    = "//$xmlNamespacePrefix:Discover";
+my $xmlResponseXPath   = "//$xmlNamespacePrefix:DiscoverResponse";
 
 sub new {
     # Take the XML given from the client
@@ -27,15 +33,12 @@ sub new {
     
     # Now we extract the specific part of the message we actually want
     my $xpc = XML::LibXML::XPathContext->new($xml);
-    $xpc->registerNs(
-        'enroll',
-        'http://schemas.microsoft.com/windows/management/2012/01/enrollment/'
-        );
+    $xpc->registerNs($xmlNamespacePrefix,$xmlNamespace);
 
     # Load XML schema from disk
     eval {
         $schema = XML::LibXML::Schema->new(
-            location => $schemaDir.$schemaName);
+            location => $schemaDir.$schemaFileName);
     } or do {
         #TODO output some kind of error internally
         return (undef,"ERROR: Failed to load schema - $@");
@@ -43,7 +46,7 @@ sub new {
 
     # Attempt to validate the input
     eval {
-        $schema->validate($xpc->findnodes('//enroll:Discover'));
+        $schema->validate($xpc->findnodes($xmlRequestXPath));
         1;
     } or do {
         #TODO output some kind of error internally
@@ -64,7 +67,7 @@ sub bestSupportedAuthType {
     my $self = shift;
 
     my @clientAuth = map{$_->to_literal();}
-        $self->{'xpath'}->findnodes('//enroll:AuthPolicy');
+        $self->{'xpath'}->findnodes("//$xmlNamespacePrefix:AuthPolicy");
 
     if( grep(/^OnPremise$/,@clientAuth) ){
         return 'OnPremise';
@@ -83,6 +86,7 @@ sub buildResponseForAuthType {
     # Add the stuff for our server (where our paths are!)
     # Validate what we have against the XSD
     # return it
+    return "sure";
 }
 
 #sub response {
