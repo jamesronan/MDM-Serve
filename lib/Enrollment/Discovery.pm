@@ -13,15 +13,14 @@ my $schemaDir = File::Basename::dirname(__FILE__) . '/../../schema/';
 my $schemaFileName = 'discovery.xsd';
 
 # Everything we're gonna need t process the XML
-my $xmlNamespace = 'http://schemas.microsoft.com/windows/management/2012/01/enrollment/';
-my $xmlNamespacePrefix = 'e';
+my $xmlNamespace = 'http://schemas.microsoft.com/windows/management/2012/01/enrollment';
+my $xmlNamespacePrefix = 'enroll';
 my $xmlRequestXPath    = "//$xmlNamespacePrefix:Discover";
 my $xmlResponseXPath   = "//$xmlNamespacePrefix:DiscoverResponse";
 
 sub new {
     # Take the XML given from the client
     my ($class, $reqXML) = @_;
-
     my ($xml, $schema, $valid);
 
     eval {
@@ -50,7 +49,7 @@ sub new {
         1;
     } or do {
         #TODO output some kind of error internally
-        return (undef,"ERROR: Validation failed - $!");
+        return (undef,"ERROR: Validation failed - $@");
     };
 
     return bless {
@@ -81,6 +80,8 @@ sub bestSupportedAuthType {
 # mind right now is AuthenticationServiceUrl for 'Federated' clients.
 sub buildResponseForAuthType {
     my ($self, $authType) = @_;
+
+    # I guess we should load a template response?
 
     # Build response
     # Add the stuff for our server (where our paths are!)

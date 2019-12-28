@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsd:schema
         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-        xmlns:enroll="http://schemas.microsoft.com/windows/management/2012/01/enrollment/"
-        targetNamespace="http://schemas.microsoft.com/windows/management/2012/01/enrollment/"
+        xmlns:enroll="http://schemas.microsoft.com/windows/management/2012/01/enrollment"
+        targetNamespace="http://schemas.microsoft.com/windows/management/2012/01/enrollment"
         elementFormDefault="qualified">
     <xsd:element name="DiscoverResponse">
         <xsd:complexType>
