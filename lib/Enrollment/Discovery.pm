@@ -10,7 +10,7 @@ use XML::LibXML;
 use XML::LibXML::XPathContext;
 
 my $schemaDir = File::Basename::dirname(__FILE__) . '/../../xml/schema/';
-my $schemaFileName = 'discovery.xsd';
+my $schemaFileName = 'Discovery.xsd';
 
 # Everything we're gonna need t process the XML
 my $xmlNamespace = 'http://schemas.microsoft.com/windows/management/2012/01/enrollment';
