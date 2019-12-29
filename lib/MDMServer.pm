@@ -1,6 +1,7 @@
 package MDMServer;
 use Dancer ':syntax';
 
+use Try::Tiny;
 use Enrollment::Discovery;
 #use Enrollment::Authentication;
 #use Enrollment::Policy;
@@ -24,18 +25,41 @@ post '/EnrollmentServer/Discovery.svc' => sub {
     debug "Params: " . Data::Dump::dump($params);
     debug "Body: "   . request->body();
 
-    my ($enrollDiscovery,$err) = Enrollment::Discovery->new(request->body());
-    send_error($err,400) unless defined $enrollDiscovery;
+    my ($enrollDiscovery,$authType,$response);
 
-    my ($authType,$err) = $enrollDiscovery->bestSupportedAuthType();
-    send_error($err,501) unless defined $authType;
+    # Set up object and load templates from disk
+    try {
+        $enrollDiscovery = Enrollment::Discovery->new();
+    } catch {
+        send_error($_,500);
+    };
 
-    my ($response,$err) = $enrollDiscovery->buildResponseForAuthType($authType);
-    send_error($err,501) unless defined $response;
-    return $response
+    # See if the client sent a valid request
+    try {
+        $enrollDiscovery->parseRequest(request->body());
+    } catch {
+        send_error($_,400);
+    };
+
+    # See if we can service the clients request
+    try {
+        $authType = $enrollDiscovery->bestSupportedAuthType();
+    } catch {
+        send_error($_,501);
+    };
+
+    # Build a response for the client
+    # I have no idea which error code we should return if this goes wrong,
+    # yet...
+    try {
+        $response = $enrollDiscovery->buildResponseForAuthType($authType);
+    } catch {
+        send_error($_,500);
+    };
+    return $response;
 };
 
-# TODO: implement for 2FA enrolement
+# TODO: implement for 2FA enrollment
 # Step 2: Extra autentication
 # Only if the client is using 'Federated' authentication it will request an
 # auth token from this address. This is useful specifically for avoiding

@@ -2,15 +2,17 @@ package Enrollment::Discovery;
 use strict;
 use warnings FATAL => 'all';
 
+use Try::Tiny;
 use Data::Dump;
-use XML::Compile::Schema;
-use XML::LibXML::Reader;
+use File::Basename;
 
 use XML::LibXML;
 use XML::LibXML::XPathContext;
 
-my $schemaDir = File::Basename::dirname(__FILE__) . '/../../xml/schema/';
-my $schemaFileName = 'Discovery.xsd';
+my $schemaDir 		 = File::Basename::dirname(__FILE__) . '/../../xml/schema/';
+my $schemaFileName 	 = 'Discovery.xsd';
+my $templateDir 	 = File::Basename::dirname(__FILE__) . '/../../xml/template/';
+my $templateFileName = 'DiscoverResponse.xml';
 
 # Everything we're gonna need t process the XML
 my $xmlNamespace = 'http://schemas.microsoft.com/windows/management/2012/01/enrollment';
@@ -19,43 +21,56 @@ my $xmlRequestXPath    = "//$xmlNamespacePrefix:Discover";
 my $xmlResponseXPath   = "//$xmlNamespacePrefix:DiscoverResponse";
 
 sub new {
-    # Take the XML given from the client
-    my ($class, $reqXML) = @_;
-    my ($xml, $schema, $valid);
-
-    eval {
-        $xml = XML::LibXML->load_xml(string => $reqXML);
-    } or do {
-        #TODO output some kind of error internally
-        return (undef,"ERROR: Invalid client XML - $@");
-    };
-    
-    # Now we extract the specific part of the message we actually want
-    my $xpc = XML::LibXML::XPathContext->new($xml);
-    $xpc->registerNs($xmlNamespacePrefix,$xmlNamespace);
-
+    my ($schema, $template);
     # Load XML schema from disk
-    eval {
+    try {
         $schema = XML::LibXML::Schema->new(
-            location => $schemaDir.$schemaFileName);
-    } or do {
-        #TODO output some kind of error internally
-        return (undef,"ERROR: Failed to load schema - $@");
+            location => $schemaDir.$schemaFileName
+            );
+    } catch {
+        die "ERROR: Failed to load schema at - " . $schemaDir.$schemaFileName;
     };
 
-    # Attempt to validate the input
-    eval {
-        $schema->validate($xpc->findnodes($xmlRequestXPath));
-        1;
-    } or do {
-        #TODO output some kind of error internally
-        return (undef,"ERROR: Validation failed - $@");
+    # Load the reponse template from disk
+    try {
+        $template = XML::LibXML->load_xml(
+            location => $templateDir.$templateFileName
+            );
+    } catch {
+        die "ERROR: Failed to load response template - " . $templateDir.$templateFileName;
     };
 
     return bless {
-        request => $xml,
-        xpath   => $xpc,
+        schema   => $schema,
+        template => $template,
         }, __PACKAGE__;
+}
+
+sub parseRequest {
+    my ($self, $request) = @_;
+
+    my $xml;
+
+    try {
+        $xml = XML::LibXML->load_xml(string => $request);
+    } catch {
+        die "ERROR: Invalid client XML - $_";
+    };
+
+    # Now we extract the specific part of the message we actually want into an
+    # XPathContext XML object, it acts just like a regular XML object.
+    my $xpc = XML::LibXML::XPathContext->new($xml);
+    $xpc->registerNs($xmlNamespacePrefix,$xmlNamespace);
+
+    # Attempt to validate the input
+    try {
+        $self->{schema}->validate($xpc->findnodes($xmlRequestXPath));
+    } catch {
+        die "ERROR: Validation failed - $_";
+    };
+
+    # Save the extracted XML for later use
+    $self->{'xpath'} = $xpc;
 }
 
 # Clients can request 1-3 types of supported authentication, we need to compare
