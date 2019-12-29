@@ -9,7 +9,7 @@ use XML::LibXML::Reader;
 use XML::LibXML;
 use XML::LibXML::XPathContext;
 
-my $schemaDir = File::Basename::dirname(__FILE__) . '/../../schema/';
+my $schemaDir = File::Basename::dirname(__FILE__) . '/../../xml/schema/';
 my $schemaFileName = 'discovery.xsd';
 
 # Everything we're gonna need t process the XML
