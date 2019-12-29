@@ -9,9 +9,9 @@ use File::Basename;
 use XML::LibXML;
 use XML::LibXML::XPathContext;
 
-my $schemaDir 		 = File::Basename::dirname(__FILE__) . '/../../xml/schema/';
-my $schemaFileName 	 = 'Discovery.xsd';
-my $templateDir 	 = File::Basename::dirname(__FILE__) . '/../../xml/template/';
+my $schemaDir        = File::Basename::dirname(__FILE__) . '/../../xml/schema/';
+my $schemaFileName   = 'Discovery.xsd';
+my $templateDir      = File::Basename::dirname(__FILE__) . '/../../xml/template/';
 my $templateFileName = 'DiscoverResponse.xml';
 
 # Everything we're gonna need t process the XML
@@ -28,7 +28,8 @@ sub new {
             location => $schemaDir.$schemaFileName
             );
     } catch {
-        die "ERROR: Failed to load schema at - " . $schemaDir.$schemaFileName;
+        die "ERROR: Failed to load schema at - "
+            . $schemaDir.$schemaFileName;
     };
 
     # Load the reponse template from disk
@@ -37,7 +38,8 @@ sub new {
             location => $templateDir.$templateFileName
             );
     } catch {
-        die "ERROR: Failed to load response template - " . $templateDir.$templateFileName;
+        die "ERROR: Failed to load response template - "
+            . $templateDir.$templateFileName;
     };
 
     return bless {
