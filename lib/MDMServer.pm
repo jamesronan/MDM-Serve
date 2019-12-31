@@ -20,11 +20,6 @@ get '/EnrollmentServer/Discovery.svc' => sub {
 };
 
 post '/EnrollmentServer/Discovery.svc' => sub {
-
-    my $params = params();
-    debug "Params: " . Data::Dump::dump($params);
-    debug "Body: "   . request->body();
-
     my ($enrollDiscovery,$authType,$response);
 
     # Set up object and load templates from disk
@@ -49,8 +44,6 @@ post '/EnrollmentServer/Discovery.svc' => sub {
     };
 
     # Build a response for the client
-    # I have no idea which error code we should return if this goes wrong,
-    # yet...
     try {
         $response = $enrollDiscovery->buildResponseForAuthType($authType);
     } catch {
@@ -77,25 +70,28 @@ post '/EnrollmentServer/Discovery.svc' => sub {
 # Step 3: Provide policy for Enrollment
 post '/EnrollmentServer/Policy.svc' => sub {
 
-    my $enrollPolicy = Enrollment::Policy->new();
+    #my $enrollPolicy = Enrollment::Policy->new();
 
     my $params = params();
     debug "Params: " . Data::Dump::dump($params);
-    debug "Body: " . request->body();
+    debug "Body: \n" . request->body() . "\n\n";
 
-    return $enrollPolicy->response();
+
+    send_error("didn't write this yet",500);
+    #return $enrollPolicy->response();
 };
 
 # Step 4: Request security token (i.e. an x509 Certificate)
 post '/EnrollmentServer/Token.svc' => sub {
 
-    my $enrollToken = Enrollment::Token->new();
+    #my $enrollToken = Enrollment::Token->new();
 
     my $params = params();
     debug "Params: " . Data::Dump::dump($params);
-    debug "Body: " . request->body();
+    debug "Body: \n" . request->body() . "\n\n";
 
-    return $enrollToken->response();
+    send_error("didn't write this yet",500);
+    #return $enrollToken->response();
 };
 
 1;

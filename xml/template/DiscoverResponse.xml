@@ -25,10 +25,12 @@
                 <EnrollmentServiceUrl>
                     CHANGEME
                 </EnrollmentServiceUrl>
+                <!--
                 <AuthenticationServiceUrl>
                     CHANGEME
                 </AuthenticationServiceUrl>
+                -->
             </DiscoverResult>
-        </DiscoverResponse> 
+        </DiscoverResponse>
     </s:Body>
 </s:Envelope>

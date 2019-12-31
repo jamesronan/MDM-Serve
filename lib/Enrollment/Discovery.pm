@@ -97,7 +97,7 @@ sub bestSupportedAuthType {
 # mind right now is AuthenticationServiceUrl for 'Federated' clients.
 sub buildResponseForAuthType {
     my ($self, $authType) = @_;
-    
+
     # TODO: be less dirty
     my $hostname   = "https://EnterpriseEnrollment.home.abablabab.co.uk";
     my $authURL    = "/EnrollmentServer/Authentication.svc";
@@ -115,33 +115,24 @@ sub buildResponseForAuthType {
     ($node->firstChild)->setData($authType);
 
     # Now we need to set the URLs we want to point the clients to
-    ($node) = $xpc->findnodes("//$xmlNamespacePrefix:AuthenticationServiceUrl");
-    ($node->firstChild)->setData($hostname.$authURL);
     ($node) = $xpc->findnodes("//$xmlNamespacePrefix:EnrollmentPolicyServiceUrl");
     ($node->firstChild)->setData($hostname.$policyURL);
     ($node) = $xpc->findnodes("//$xmlNamespacePrefix:EnrollmentServiceUrl");
     ($node->firstChild)->setData($hostname.$serviceURL);
 
-    # Now we validate what we've written to see if we've messed it up
+    # The spec doesn't say it, but if you use OnPremise you MUST omit this field
+    #($node) = $xpc->findnodes("//$xmlNamespacePrefix:AuthenticationServiceUrl");
+    #($node->firstChild)->setData($hostname.$authURL);
 
-    return $xml->toString();
+    # Now we validate what we've written to see if we've messed it up
+    try {
+        $self->{schema}->validate($xpc->findnodes($xmlResponseXPath));
+    } catch {
+        die "ERROR: Generated response validation failed - $_";
+    };
+
+    return $xml->documentElement()->toString();
 }
 
-#sub response {
-#    my ($self, @params) = @_;
-#
-#    my $schema = XML::Compile::Schema->new($schema_dir . '/discovery.xsd');
-#    my $response_element = ($schema->elements)[1]; # Response.
-#
-#    my $response_data = eval $schema->template('PERL', $response_element);
-#
-#    my $doc    = XML::LibXML::Document->new('1.0', 'UTF-8');
-#    my $write  = $schema->compile(WRITER => $response_element);
-#    my $xml    = $write->($doc, $response_data);
-#
-#    $doc->setDocumentElement($xml);
-#
-#    return $doc->toString(1); # 1 indicates "pretty print"
-#}
 
 1;
