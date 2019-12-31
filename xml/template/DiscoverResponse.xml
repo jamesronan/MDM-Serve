@@ -13,7 +13,7 @@
     </s:Header>
     <s:Body xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-        <DiscoverResponse xmlns="http://schemas.microsoft.com/windows/management/2012/01/enrollment/">
+        <DiscoverResponse xmlns="http://schemas.microsoft.com/windows/management/2012/01/enrollment">
             <DiscoverResult>
                 <AuthPolicy>
                     CHANGEME

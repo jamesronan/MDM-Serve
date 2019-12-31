@@ -15,7 +15,7 @@ my $templateDir      = File::Basename::dirname(__FILE__) . '/../../xml/template/
 my $templateFileName = 'DiscoverResponse.xml';
 
 # Everything we're gonna need t process the XML
-my $xmlNamespace = 'http://schemas.microsoft.com/windows/management/2012/01/enrollment';
+my $xmlNamespace ='http://schemas.microsoft.com/windows/management/2012/01/enrollment';
 my $xmlNamespacePrefix = 'enroll';
 my $xmlRequestXPath    = "//$xmlNamespacePrefix:Discover";
 my $xmlResponseXPath   = "//$xmlNamespacePrefix:DiscoverResponse";
@@ -97,14 +97,34 @@ sub bestSupportedAuthType {
 # mind right now is AuthenticationServiceUrl for 'Federated' clients.
 sub buildResponseForAuthType {
     my ($self, $authType) = @_;
+    
+    # TODO: be less dirty
+    my $hostname   = "https://EnterpriseEnrollment.home.abablabab.co.uk";
+    my $authURL    = "/EnrollmentServer/Authentication.svc";
+    my $policyURL  = "/EnrollmentServer/Policy.svc";
+    my $serviceURL = "/EnrollmentServer/Token.svc";
 
-    # I guess we should load a template response?
+    # We can use the same xpath technique we used with on the incoming XML
+    my $xml = $self->{'template'};
+    my $xpc = XML::LibXML::XPathContext->new($xml);
+    $xpc->registerNs($xmlNamespacePrefix,$xmlNamespace);
 
-    # Build response
-    # Add the stuff for our server (where our paths are!)
-    # Validate what we have against the XSD
-    # return it
-    return "sure";
+    my ($node,$text);
+    # We need to set the AuthPolicy to one we want to do
+    ($node) = $xpc->findnodes("//$xmlNamespacePrefix:AuthPolicy");
+    ($node->firstChild)->setData($authType);
+
+    # Now we need to set the URLs we want to point the clients to
+    ($node) = $xpc->findnodes("//$xmlNamespacePrefix:AuthenticationServiceUrl");
+    ($node->firstChild)->setData($hostname.$authURL);
+    ($node) = $xpc->findnodes("//$xmlNamespacePrefix:EnrollmentPolicyServiceUrl");
+    ($node->firstChild)->setData($hostname.$policyURL);
+    ($node) = $xpc->findnodes("//$xmlNamespacePrefix:EnrollmentServiceUrl");
+    ($node->firstChild)->setData($hostname.$serviceURL);
+
+    # Now we validate what we've written to see if we've messed it up
+
+    return $xml->toString();
 }
 
 #sub response {
