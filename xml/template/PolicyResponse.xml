@@ -1,31 +1,31 @@
 <s:Envelope
-	xmlns:u="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility1.0.xsd"
-	xmlns:s="http://www.w3.org/2003/05/soap-envelope"
-	xmlns:a="http://www.w3.org/2005/08/addressing"
+  xmlns:u="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility1.0.xsd"
+  xmlns:s="http://www.w3.org/2003/05/soap-envelope"
+  xmlns:a="http://www.w3.org/2005/08/addressing"
 >
   <s:Header>
     <a:Action s:mustUnderstand="1">
       http://schemas.microsoft.com/windows/pki/2009/01/enrollmentpolicy/IPolicy/GetPoliciesResponse
     </a:Action>
-		<a:RelatesTo>
+    <a:RelatesTo>
       urn:uuid: 69960163-adad-4a72-82d2-bb0e5cff5598
     </a:RelatesTo>
   </s:Header>
-	<s:Body
+  <s:Body
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
   >
-	  <GetPoliciesResponse xmlns="http://schemas.microsoft.com/windows/pki/2009/01/enrollmentpolicy">
-		  <response>
+    <GetPoliciesResponse xmlns="http://schemas.microsoft.com/windows/pki/2009/01/enrollmentpolicy">
+      <response>
         <policyID/>
-			  <policyFriendlyName xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <policyFriendlyName xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
         <nextUpdateHours xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
-			  <policiesNotChanged xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <policiesNotChanged xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
         <policies>
           <policy>
-				    <policyOIDReference>0</policyOIDReference>
+            <policyOIDReference>0</policyOIDReference>
             <cAs xsi:nil="true"/>
-				    <attributes>
+            <attributes>
               <commonName>CEPUnitTest</commonName>
               <policySchema>3</policySchema> <!-- MS-XCEP version -->
               <certificateValidity>
@@ -65,7 +65,7 @@
       <oIDs>
         <!-- WTF example?? This is RSA SHA1, not 256 -->
         <!--
-				<oID>
+        <oID>
           <value>1.3.14.3.2.29</value>
           <group>1</group>
           <oIDReferenceID>0</oIDReferenceID>
