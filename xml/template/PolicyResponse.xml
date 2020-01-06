@@ -1,0 +1,90 @@
+<s:Envelope
+	xmlns:u="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility1.0.xsd"
+	xmlns:s="http://www.w3.org/2003/05/soap-envelope"
+	xmlns:a="http://www.w3.org/2005/08/addressing">
+	<s:Header>
+		<a:Action s:mustUnderstand="1">
+         http://schemas.microsoft.com/windows/pki/2009/01/enrollmentpolicy/IPolicy/GetPoliciesResponse
+       </a:Action>
+		<a:RelatesTo>urn:uuid: 69960163-adad-4a72-82d2-bb0e5cff5598</a:RelatesTo>
+	</s:Header>
+	<s:Body
+	  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+		<GetPoliciesResponse xmlns="http://schemas.microsoft.com/windows/pki/2009/01/enrollmentpolicy">
+		  <response>
+            <policyID />
+			<policyFriendlyName xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+            <nextUpdateHours xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+			<policiesNotChanged xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+            <policies>
+              <policy>
+				<policyOIDReference>0</policyOIDReference>
+                <cAs xsi:nil="true" />
+				  <attributes>
+                    <commonName>CEPUnitTest</commonName>
+					<policySchema>3</policySchema> <!-- MS-XCEP version -->
+                    <certificateValidity>
+                      <validityPeriodSeconds>1209600</validityPeriodSeconds> <!-- 14 days -->
+					  <renewalPeriodSeconds>172800</renewalPeriodSeconds> <!-- 2 days -->
+					</certificateValidity>
+					<permission>
+                      <enroll>true</enroll>
+                      <autoEnroll>false</autoEnroll>
+					</permission>
+					<privateKeyAttributes>
+                      <minimalKeyLength>2048</minimalKeyLength>
+					  <keySpec xsi:nil="true" />
+                      <keyUsageProperty xsi:nil="true" />
+                      <permissions xsi:nil="true" />
+                      <algorithmOIDReference xsi:nil="true" />
+                      <cryptoProviders xsi:nil="true" />
+                    </privateKeyAttributes>
+                    <revision>
+                      <majorRevision>101</majorRevision>
+                      <minorRevision>0</minorRevision>
+                    </revision>
+                    <supersededPolicies xsi:nil="true" />
+                    <privateKeyFlags xsi:nil="true" />
+                    <subjectNameFlags xsi:nil="true" />
+                    <enrollmentFlags xsi:nil="true" />
+                    <generalFlags xsi:nil="true" />
+                    <hashAlgorithmOIDReference>0</hashAlgorithmOIDReference> <!-- must match ref below -->
+                    <rARequirements xsi:nil="true" />
+                    <keyArchivalAttributes xsi:nil="true" />
+                    <extensions xsi:nil="true" />
+                    </attributes>
+                  </policy>
+                </policies>
+              </response>
+              <cAs xsi:nil="true" />
+              <oIDs>
+                <!-- WTF example?? This is RSA SHA1, not 256 -->
+                <!--
+				<oID>
+                  <value>1.3.14.3.2.29</value>
+                  <group>1</group>
+                  <oIDReferenceID>0</oIDReferenceID>
+                  <defaultName>szOID_NIST_sha256</defaultName>
+                </oID>
+                -->
+                <!-- Curve 25519, SHOULD be supported in windows 10 -->
+                <!--
+                <oID>
+                  <value>1.3.101.110</value>
+                  <group>1</group>
+                  <oIDReferenceID>0</oIDReferenceID>
+                  <defaultName>EC_X25519</defaultName>
+                </oID>
+                -->
+                <!-- RSA SHA256 for reals -->
+                <oID>
+                  <value>1.2.840.113549.1.1.11</value>
+                  <group>1</group>
+                  <oIDReferenceID>0</oIDReferenceID>
+                  <defaultName>szOID_RSA_SHA256RSA</defaultName>
+                </oID>
+			  </oIDs>
+            </GetPoliciesResponse>
+	</s:Body>
+</s:Envelope>
