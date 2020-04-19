@@ -19,6 +19,7 @@ get '/EnrollmentServer/Discovery.svc' => sub {
     return "OK"
 };
 
+# Discovery second step will be a SOAP discovery request with some host info
 post '/EnrollmentServer/Discovery.svc' => sub {
     my ($enrollDiscovery,$authType,$response);
 
@@ -46,10 +47,13 @@ post '/EnrollmentServer/Discovery.svc' => sub {
     # Build a response for the client
     try {
         $response = $enrollDiscovery->buildResponseForAuthType($authType);
+        return $response;
     } catch {
         send_error($_,500);
     };
-    return $response;
+
+    # Famous last words - this shouldn't happen..
+    send_error("Unknown error",500);
 };
 
 # TODO: implement for 2FA enrollment
@@ -70,7 +74,7 @@ post '/EnrollmentServer/Discovery.svc' => sub {
 # Step 3: Provide policy for Enrollment
 post '/EnrollmentServer/Policy.svc' => sub {
 
-    #my $enrollPolicy = Enrollment::Policy->new();
+    $enrollPolicy = Enrollment::Policy->new();
 
     my $params = params();
     debug "Params: " . Data::Dump::dump($params);
