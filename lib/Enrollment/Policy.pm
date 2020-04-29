@@ -17,17 +17,18 @@ my $templateFileName = 'PolicyResponse.xml';
 sub new {
     # We're gonna do this the dirtiest way we can think of to begin with,
     # straight up return the file from the disk
+    my $response;
     try {
         $response = XML::LibXML->load_xml(
             location => $templateDir.$templateFileName
-            );
+        );
     } catch {
         die "ERROR: Failed to load response - "
             . $templateDir.$templateFileName;
     };
 
     return bless {
-        response => $response,
+        'response' => $response,
         }, __PACKAGE__;
 }
 
@@ -40,8 +41,7 @@ sub new {
 sub respond {
     my ($self) = @_;
 
-    return $self.
+    return $self;
 }
-
 
 1;
