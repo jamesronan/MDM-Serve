@@ -32,16 +32,25 @@ sub new {
         }, __PACKAGE__;
 }
 
+sub validateRequest {
+    return 1;
+}
+
+sub validateResponse {
+    return 1;
+}
+
 # TODO: we need to think about if this is an initial or update request
 # according to the doco (MS-XCEP) there is a different field set depending on if
 # the LastUpdateTime field is present. There IS a documented 'nothing has
 # changed' response we can give for testing. But for now we assume this is
 # initial enroll!
+sub updatePolicy {
+    return 0;
+}
 
-sub respond {
-    my ($self) = @_;
-
-    return $self;
+sub newPolicy {
+    return 0;
 }
 
 1;
